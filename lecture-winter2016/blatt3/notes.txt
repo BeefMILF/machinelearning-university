@@ -1,0 +1,18 @@
+diagonal covariance: independence
+
+gaussian formula for P(x1, x2) with diagonal Sigma: develop and we get P(x1)P(x2)
+
+
+
+Decomposition of covariance:
+
+assuma that there is a rotation of an isometric multivariate gaussian:
+then x' = Rx
+
+substituting in Pr(x)  = ..sigmadiag... ( -0.5 (Rx)T sigma(diag)^(-1) Rx =  ...
+conclusion: sigma_full = R^T * Sigma_diag * R  "full covariance can be descomposed into rotation matrix and diagonal"
+
+
+** slide for the exercise one:
+"if you transform the variables with an affine function, the result will be also gaussian".
+Show how this works

@@ -1,0 +1,222 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{scrartcl} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+\usepackage{graphicx}
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathcomp}
+%\usepackage{colortbl}
+\usepackage{dsfont}
+\usepackage{amsfonts}
+\usepackage{cancel}
+
+%%% KV-Diagramme
+%\usepackage[ngerman]{babel}
+\input kvmacros
+
+%%% Graphen
+\usepackage{tikz}
+\usetikzlibrary{intersections}
+\usetikzlibrary{calc}
+
+% last page
+\usepackage{pageslts}
+
+%%% END Article customizations
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+%\usepackage{scrpage2} % Another package (only use fancyhdr or scrpage2)
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{1.2pt} % customise the layout...
+\renewcommand{\footrulewidth}{0.1pt} % customise the layout...
+\lhead{MACHINE LEARNING 1\\Andres Fernandez -- 5692442 -- fr\_andres@msn.com}\chead{}\rhead{Exercise Sheet 1 \\November 7, 2016}
+\lfoot{ML1-Sheet1-5692442}\cfoot{}\rfoot{\thepage/\lastpageref{LastPages}}
+
+
+
+%%% The "real" document content comes below...
+
+
+\begin{document}
+
+\section*{\\[3mm]Exercise 1}
+\subsection*{{\it Give a real-world example of a joint distribution P (x, y) where x is discrete and y is continuous}}
+        We can model a car with 6 gears, where \(x\in\{1,2,3,4,5,6\}\) would correspond to the gear, \(y\in [0, 6000]\) to the motor revolutions,and \(\mathbb{P}(x, y)\) to the probability of having a breakdown after 10 years of usage.
+
+
+
+        \vspace{5mm}
+	\section*{Exercise 2}
+
+	\subsection*{i) {\it What remains if I marginalize a joint distribution P (v, w, x, y, z) over five variables with respect to variables w and y?}}
+        \begin{equation}
+          {\displaystyle \int_{\mathbb{S}_w} \int_{\mathbb{S}_y}} \mathbb{P}(v,w,x,y,z) \,dw\,dy =
+          {\displaystyle \int_{\mathbb{S}_w}} \mathbb{P}(v,w,x,z) \,dw =
+          \mathbb{P}(v,x,z)
+        \end{equation}
+
+        \subsection*{ii) {\it What remains if I marginalize the resulting distribution with respect to v?}}
+        \begin{equation}
+          {\displaystyle \int_{\mathbb{S}_v}} \mathbb{P}(v,x,z) \,dv =
+          \mathbb{P}(x,z)
+        \end{equation}
+
+
+
+        \vspace{5mm}
+	\section*{Exercise 3}
+        \subsection*{{\it If variables x and y are independent and variables x and z are independent, does it follow that variables y and z are independent?}}
+        \newcommand{\CI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+        \newcommand{\nCI}{\cancel{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}}
+        No. for example, if \(z := x\), it would naturally follow that
+        \begin{equation}
+          x \CI y \iff z \CI y
+        \end{equation}
+        but \(x \nCI y\), since the multiplication rule \(\mathbb{P}(x,y) = \mathbb{P}(x)\mathbb{P}(y)\) wouldn't hold for every values of \(x\) and \(y\). For example, given \(x\sim unif\{0, 1\}\):
+        \begin{equation}
+          0 = \mathbb{P}(x=1, y=0) \neq \mathbb{P}(x=1)\mathbb{P}(y=1) = 0.5\cdot 0.5 = 0.25
+        \end{equation}
+        \begin{flushright}
+		$\square$\\
+	\end{flushright}
+
+
+
+
+	\vspace{5mm}
+        \section*{Exercise 4}
+        \subsection*{{\it Show that the following relation is true: \(\mathbb{P}(w,x,y,z) = \mathbb{P}(x,y)\mathbb{P}(z|w, x, y)\mathbb{P}(w|x, y)\)}}
+        Bayes' theorem is based on the following observations:
+
+        \begin{equation}\label{eq:1}
+          \mathbb{P}(a, b) = \mathbb{P}(b, a)
+        \end{equation}
+
+        \begin{equation}\label{eq:2}
+          \mathbb{P}(a|b) = \frac{\mathbb{P}(a, b)}{\mathbb{P}(b)}
+        \end{equation}
+
+        \begin{equation}\label{eq:2}
+          \mathbb{P}(b|a) = \frac{\mathbb{P}(b, a)}{\mathbb{P}(a)}
+        \end{equation}
+
+        Equation \ref{eq:1} implies the following equivalence:
+        \begin{equation}\label{eq:3}
+          \mathbb{P}(a|b)\mathbb{P}(b) = \mathbb{P}(b|a)\mathbb{P}(a)
+        \end{equation}
+
+        this allows to define \(\mathbb{P}(a|b)\) in terms of \(\mathbb{P}(b|a)\) and vice versa, which is known as the \textbf{Bayes' rule}. This rule also allows to decompose any joint probability in a chain of conditional probabilities, as follows:
+
+        \begin{equation}\label{eq:4}
+          \mathbb{P}(w,x,y,z) = \mathbb{P}(z,w,x,y) = \mathbb{P}(z|w,x,y)\mathbb{P}(w,x,y) = \mathbb{P}(z|w,x,y)\mathbb{P}(w|x,y)\mathbb{P}(x,y)
+        \end{equation}
+        Which, due to a trivial commutativity of multiplication, leads to the following equivalence:
+        \begin{equation}\label{eq:5}
+          \mathbb{P}(w,x,y,z) = \mathbb{P}(x,y)\mathbb{P}(z|w, x, y)\mathbb{P}(w|x, y)
+        \end{equation}
+        \begin{flushright}
+		$\square$\\
+	\end{flushright}
+
+
+
+\vspace{5mm}
+        \section*{Exercise 5}
+        \subsection*{{\it In my pocket there are two coins. Coin 1 is unbiased, so the likelihood \(\mathbb{P}(h = 1|c = 1)\) of getting heads is 0.5 and the likelihood \(\mathbb{P}(h =0|c = 1)\) of getting tails is also 0.5. Coin 2 is biased, so the likelihood \(\mathbb{P}(h =1|c = 2)\) of getting heads is 0.8 and the likelihood \(\mathbb{P}(h = 0|c = 2)\) of getting tails is 0.2. I reach into my pocket and draw one of the coins at random. There is an equal prior probability I might have picked either coin. I flip the coin and observe a head. Use Bayes’ rule to compute the posterior probability that I chose coin 2.}}
+
+        Asked is \(\mathbb{P}(c=2|h=1)\). Following Bayes' rule, we know that
+        \begin{equation}\label{eq:6}
+          \mathbb{P}(c=2|h=1) = \frac{\mathbb{P}(h=1|c=2)\mathbb{P}(c=2)}{\mathbb{P}(h=1)}
+        \end{equation}
+
+        All of this terms can be calculated from the given data:\\
+
+        \(\qquad \mathbb{P}(h=1|c=2) := 0.8\)\\
+
+        \(\qquad \mathbb{P}(c=2) := 0.5\)\\
+
+        \(\qquad \mathbb{P}(h=1) := \mathbb{P}(h=1|c=1)+\mathbb{P}(h=1|c=2) = 0.5\cdot 0.5 + 0.5\cdot 0.8 = 0.65 \)\\
+
+\end{math}
+
+And therefore
+\begin{equation}\label{eq:7}
+          \mathbb{P}(c=2|h=1) = \frac{\mathbb{P}(h=1|c=2)\mathbb{P}(c=2)}{\mathbb{P}(h=1)} = \frac{0.8\cdot 0.5}{0.65} \approx 0.615
+        \end{equation}
+
+
+
+
+
+
+\vspace{5mm}
+        \section*{Exercise 6}
+        \subsection*{{\it Consider a biased die where the probabilities of rolling sides {1, 2, 3, 4, 5, 6} are {1/12, 1/12, 1/12, 1/12, 1/6, 1/2}, respectively.}}
+
+
+        \subsection*{i) {\it What is the expected value of the die?}}
+        The expected value for a discrete random variable can be calculated like this:
+        \begin{equation}\label{eq:8}
+          \mathbb{E}[X] = \sum_{x\in\mathbb{S}_{X}} x\cdot \rho(x)
+        \end{equation}
+        Applying the formula to the given distribution, we obtain the following expected value:\\
+        \(\mathbb{E}[X] = 1\cdot\frac{1}{12}+2\cdot\frac{1}{12}+3\cdot\frac{1}{12}+4\cdot\frac{1}{12}+5\cdot\frac{1}{6}+6\cdot\frac{1}{2} = \frac{56}{12} \approx 4.67\)
+
+
+
+        \subsection*{ii) {\it If I roll the die twice, what is the expected value of the sum of the two rolls?}}
+        From the very definition of the expected value, follows its linearity:
+        \begin{equation}\label{eq:9}
+          \mathbb{E}[X+Y] = \mathbb{E}[X]+ \mathbb{E}[Y]
+        \end{equation}
+        \begin{equation}\label{eq:10}
+          \mathbb{E}[\lambda X] = \lambda \mathbb{E}[X] \qquad \lambda \in \mathbb{R}
+        \end{equation}
+
+        By rolling the die twice, we could assume that Y has the same distribution as X, and both variables aren't correlated, which would be equivalent to apply equation \ref{eq:10} with \(\lambda=2\). In general, rolling the die \(n\) times will have an expected value of \(n\cdot \mathbb{E}[X]\), which for our case means that:
+        \mathbb{E}[X+X] = 2\cdot \mathbb{E}[X] = 2 \cdot \frac{56}{12} \approx 9.33
+
+\end{document}
