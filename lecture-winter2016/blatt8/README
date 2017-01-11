@@ -1,0 +1,11 @@
+MACHINE LEARNING 1, 9. JAN. 2017
+ASSIGNMENT 8
+
+Andres Fernandez Rodriguez, 5692442
+
+The assignment has been done with Octave 3.8. In order to run it,
+place the script "fernandez_exercise8.m" and the file "comp_testX.dat" in the same directory, and run
+
+octave fernandez_exercise8.m
+
+The program will then output the predictions into comp_testY.dat
