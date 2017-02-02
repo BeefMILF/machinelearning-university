@@ -1,0 +1,198 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{scrartcl} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+\usepackage{graphicx}
+% These packages are all incorporated in the memoir class to one degree or another...
+\usepackage{hyperref}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathcomp}
+%\usepackage{colortbl}
+\usepackage{dsfont}
+\usepackage{amsfonts}
+\usepackage{cancel}
+
+%%% KV-Diagramme
+%\usepackage[ngerman]{babel}
+\input kvmacros
+
+%%% Graphen
+\usepackage{tikz}
+\usetikzlibrary{intersections}
+\usetikzlibrary{calc}
+
+% last page
+\usepackage{pageslts}
+
+%%% END Article customizations
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+%\usepackage{scrpage2} % Another package (only use fancyhdr or scrpage2)
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{1.2pt} % customise the layout...
+\renewcommand{\footrulewidth}{0.1pt} % customise the layout...
+\lhead{MACHINE LEARNING 1\\Andres Fernandez -- 5692442 -- fr\_andres@msn.com}\chead{}\rhead{Exercise Sheet 9 \\January 16
+  , 2017}
+\lfoot{}\cfoot{\thepage/\lastpageref{LastPages}}\rfoot{}
+
+
+
+%%% THE SYMBOLS FOR ``DEPENDENT'' AND ``INDEPENDENT''
+\newcommand{\CI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}} % independent
+\newcommand{\nCI}{\cancel{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}} % dep
+%% THE SYMBOL FOR DOESN'T IMPLY
+\newcommand{\notimplies}{%
+  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+%%% The "real" document content comes below...
+
+
+\begin{document}
+
+
+         \vspace{5mm}
+\section*{Exercise 1}
+         {\it Verify the relation}
+         \begin{align*}
+           \begin{aligned}
+             \frac{d\sigma}{da} = \sigma (1-\sigma)
+           \end{aligned}
+         \end{align*}
+             {\it For the derivative of the logistic sigmoid function defined by}
+             \begin{align*}
+               \begin{aligned}
+                 \frac{d\sigma}{da} = \sigma (1-\sigma)
+                 \sigma(a) = \frac{1}{1+ e^{-a}}
+               \end{aligned}
+             \end{align*}
+             
+             For this, the chain rule can be applied:
+             \begin{align*}
+               \begin{aligned}
+                 (f(g(a)))' = f'(g(a))\cdot g'(a)
+               \end{aligned}
+             \end{align*}
+             Whereas:
+             \begin{align*}
+               \begin{aligned}
+                 & f(a) = a^{-1} \quad \Longrightarrow \quad f'(a) = -a^{-2}\\
+                 & g(a) = 1+e^{-a} \quad \Longrightarrow \quad g'(a) = -e^{-a}\\
+                 & \sigma(a) = (1+e^{-a})^{-1} = f(g(a))
+               \end{aligned}
+             \end{align*}
+             Therefore, it holds:
+             \begin{align*}
+               \begin{aligned}
+                 \sigma'(a) &= -(1+e^{-a})^{-2} \cdot -(e^{-a})\\
+                 & = \frac{e^{-a}}{(1+e^{-a})^{-2}}\\
+                 & = \frac{1}{1+e^{-a}} \cdot \frac{e^{-a}}{1+e^{-a}}\\
+                 & = \sigma(a) \cdot \frac{1+e^{-a}-1}{1+e^{-a}}\\
+                 & = \sigma(a) \cdot (1 - \sigma(a))\\
+               \end{aligned}
+             \end{align*}
+             \begin{flushright}
+               $\square$\\
+             \end{flushright}
+
+
+
+             \vspace{-2mm}
+             \section*{Exercise 2}
+                      {\it By making use of the expression for the derivative of the logistic sigmoid from exercise 1, show that the derivative of the error function for the logistic regression model is given by}
+
+                      \begin{align*}
+                        \begin{aligned}
+                          &\triangledown E(w) = \sum_{n=1}^N(y_n-t_n)\phi(n)
+                        \end{aligned}
+                      \end{align*}
+                      Whereas:
+                      \begin{align*}
+                        \begin{aligned}
+                          &E(w)= -\sum_{n=1}^{N}\{t_n ln(y_n) + (1-t_n) ln(1-y_n)\}\\
+                          & \triangledown E(w) = \frac{\partial E}{\partial w}\\
+                          & y_n = \sigma(s_n)\\
+                          & s_n = w^T \phi_n
+                        \end{aligned}
+                      \end{align*}
+
+                      The simplicity of this derivative is the main reason why the sigmoid (or its multi-class version, the softmax) activation function is used in combination with the cross-entropy (the negative-log likelihood) to train logistic classificators. Especially, it is useful when training neural networks, since the calculation of the backpropagation is kept as well very simple. Again, this property becomes evident when applying the chain rule:
+                      \begin{align*}
+                        \begin{aligned}
+                          &\frac{\partial E}{\partial w} = \frac{\partial E}{\partial y}\frac{\partial y}{\partial s}\frac{\partial s}{\partial w}\\
+                        \end{aligned}
+                      \end{align*}
+                      Remembering that \(f(x) = ln(x) \Rightarrow f'(x) = x^{-1} \), and what we already proved in Exercise 1, it holds:
+                      \begin{align*}
+                        \begin{aligned}
+                          & \frac{\partial E}{\partial y} = \frac{-t}{y} + \frac{1-t}{1-y} = \frac{y-t}{y (1-y)}\\
+                          & \frac{\partial y}{\partial s} = y(1-y)\\
+                          & \frac{\partial s}{\partial w} = \phi
+                        \end{aligned}
+                      \end{align*}
+                      Finally, multiplying it all, returns the derivative:
+                      \begin{align*}
+                        \begin{aligned}
+                          &\frac{\partial E}{\partial w} = \frac{y-t}{y (1-y)} \; \cdot \;  y(1-y) \; \cdot \; \phi = (y-t) \phi\\
+                        \end{aligned}
+                      \end{align*}
+                      This holds for every sample. And since the derivative of a sum is the sum of derivatives, the derivative of \(E(w)\) for the whole dataset with \(N\) samples, is the sum of this formula over the whole dataset:
+                      \begin{align*}
+                        \begin{aligned}
+                          &\frac{\partial}{\partial w} \Big( -\sum_{n=1}^{N}\{t_n ln(y_n) + (1-t_n) ln(1-y_n)\} \Big) = -\sum_{n=1}^{N}\{ (y_n - t_n) \phi_n \}
+                        \end{aligned}
+                      \end{align*}
+
+                      \begin{flushright}
+                        $\square$\\
+                      \end{flushright}
+
+\end{document}
+
+
+
+
+\begin{flushright}
+  $\square$\\
+\end{flushright}
