@@ -1,0 +1,168 @@
+
+\documentclass{article}
+
+
+
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}		% Can be removed after putting your text content
+
+%%% extra imports
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amscd}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{pict2e}
+\usepackage{epic}
+\numberwithin{equation}{section}
+\usepackage[margin=2.9cm]{geometry}
+\usepackage{epstopdf}
+\usepackage{dsfont}
+%%%
+
+
+\title{Statistical Masking of a VAE Segmentation}
+
+%\date{September 9, 1985}	% Here you can change the date presented in the paper title
+%\date{} 					% Or removing it
+
+\author{
+  Andres Fernandez\\ % \thanks{Use footnote for providing further information about author (webpage, alternative address)---\emph{not} for acknowledging funding agencies.} \\
+  Department of Computer Science\\
+  Goethe University\\
+  Frankfurt am Main \\
+  \texttt{aferro@em.uni-frankfurt.de} \\
+  %% examples of more authors
+ %%   \And
+ %% Elias D.~Striatum \\
+ %%  Department of Electrical Engineering\\
+ %%  Mount-Sheikh University\\
+ %%  Santa Narimana, Levand \\
+ %%  \texttt{stariate@ee.mount-sheikh.edu} \\
+  %% \AND
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+% Uncomment to remove the date
+%\date{}
+
+% Uncomment to override  the `A preprint' in the header
+\renewcommand{\headeright}{Technical Report}
+\renewcommand{\undertitle}{Technical Report}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+Given an input image $A \in \mathbb{R}^{H \times W}$, we have a variational classifier that maps every pixel $A_{i, j}$ to a normal distribution (parametrized by $\begin{pmatrix}\mu_{i, j} \\ \sigma_{i, j}\end{pmatrix})$ representing the confidence of the pixel belonging to a class. The output map has then dimensionality $B \in \mathbb{R}^{H \times W \times 2}$.\\
+
+  We want to accept or reject a given pixel based on this output. One method to do this is to set a minimum threshold on $\mu$ and a maximum threshold on $\sigma$, thus accepting predictions that are high and confident enough. This has several drawbacks:\\
+  \begin{itemize}
+  \item We have to set (and eventually look for) 2 thresholds.
+  \item A normal sample with $\begin{pmatrix}\mu + \epsilon; \\ \sigma - \epsilon\end{pmatrix}$ (for arbitrarily small $\epsilon$) will get accepted, but half of its total probability will be outside of our accepted range. This doesn't make the most of the information provided by the variational classifier.\\
+  \end{itemize}
+
+  A better criterium is to accept a prediction if \textbf{a probability of at least $T \in (0, 1)$ is contained above a threshold $x \in \mathbb{R}$}. This has the advantage that $T$ can be fixed in beforehand because of its clear semantics, leaving the mask as a function of one single threshold only.\\
+
+  We show here that to fullfil that criterium it suffices to compute, for every pixel:
+
+  \begin{equation} \label{criterium}
+    \begin{aligned}
+      \mathds{1}_{accept} = \frac{\mu - x}{\sigma} \geq prob(T)
+    \end{aligned}
+  \end{equation}
+
+  Where $x \in \mathbb{R}$ is our threshold, and $\mathds{1}_{accept} \in \{0, 1\}$ the boolean mask value.
+
+\end{abstract}
+
+
+%% % keywords can be removed
+%% \keywords{First keyword \and Second keyword \and More}
+
+
+\section{Definitions}
+
+
+A normal distribution can be standarized as follows:
+
+\begin{equation}
+  \begin{aligned}
+    X &\sim \mathcal{N}(\mu, \sigma^2)\\
+    Y = \frac{X - \mu}{\sigma} &\sim \mathcal{N}(0, 1)
+  \end{aligned}
+\end{equation}
+
+Following this, the cumulative distribution function (CDF) can also be standarized as follows:
+
+\begin{equation}\label{cdf_def}
+  \begin{aligned}
+    CDF_{\mu, \sigma}(x) := P(X \leq x) = &P(\sigma Y + \mu \leq x) = P(Y \leq \frac{x - \mu}{\sigma}) = CDF_{0, 1}(\frac{x - \mu}{\sigma})\\
+    =: &\Phi(\frac{x - \mu}{\sigma}) = t
+  \end{aligned}
+\end{equation}
+
+By the same reasoning, the inverse of the CDF (called \textit{quantile} function) can also be standarized as follows:
+
+\begin{equation} \label{quant_norm}
+  \begin{aligned}
+    quant_{\mu, \sigma}(t) &:= CDF_{\mu, \sigma}^{-1}(t) = x\\
+    prob(t) &:= CDF_{0, 1}^{-1}(t) = \frac{x - \mu}{\sigma} \iff quant_{\mu, \sigma}(t) = \sigma \cdot prob(t) + \mu
+  \end{aligned}
+\end{equation}
+
+The quantile for the standard normal is called \textit{probit}:
+
+\begin{equation}
+  \begin{aligned}
+    prob(t) = CDF_{0, 1}^{-1}(t) = \Phi^{-1}(t)\\[20pt]
+  \end{aligned}
+\end{equation}
+
+
+\section{Proof}
+
+Note how the CDF definitions in \ref{cdf_def} provide semantics for the parameters $(t, x)$: Given a distribution $\mathcal{N}(\mu, \sigma^2)$, the set of all events below threshold $x$ will have a probability of $t$.\\
+
+This corresponds closely to our specifications: we want to accept a distribution if a probability of at least $T \in (0, 1)$ is contained above a threshold $x$. Therefore criterium \ref{criterium} can be easily derived as follows:
+
+\begin{equation}
+  \begin{aligned}
+    CDF_{\mu, \sigma}(x) \leq 1 - T   &\iff   x \leq quant_{\mu, \sigma}(1 - T)   \iff   x \leq \sigma \cdot prob(1 - T) + \mu\\
+    &\iff \frac{x - \mu}{\sigma} \leq prob(1 - T)\\
+    &\iff \frac{\mu - x}{\sigma} \geq prob(T) \quad \qed\\
+  \end{aligned}
+\end{equation}
+
+Assuming there is an efficient way to compute $prob(T)$ (many programming libraries include one), this expression can be computed very efficiently. It is also fully vectorizable so it also scales up well for the whole image map with adequate hardware.\\
+
+
+
+
+
+\end{document}
